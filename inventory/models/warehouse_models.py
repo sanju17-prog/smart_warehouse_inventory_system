@@ -17,6 +17,7 @@ class WarehouseType(models.Model):
         return self.name
 
 class Warehouse(models.Model):
+    warehouse_type = models.ForeignKey(WarehouseType, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, unique=True)
     address = models.TextField()
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
@@ -24,7 +25,6 @@ class Warehouse(models.Model):
     capacity = models.PositiveIntegerField() # maximum number of products that can be stored
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    warehouse_type = models.ForeignKey(WarehouseType, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     '''
     warehouses might shut down or be under maintenance, so temporarily inactive.
@@ -46,8 +46,8 @@ class Warehouse(models.Model):
         return self.name
     
 class WarehouseEmployee(models.Model):
-    employee_id = models.CharField(max_length=10, unique=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    emp_id = models.CharField(max_length=10, unique=True)
+    employee = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     assigned_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=200,unique=True,null=True, blank=True)
@@ -58,7 +58,7 @@ class WarehouseEmployee(models.Model):
         super(WarehouseEmployee, self).save(*args, **kwargs)
 
     class Meta:
-        unique_together = ('employee_id', 'warehouse')
+        unique_together = ('emp_id', 'warehouse')
     
     def __str__(self):
-        return f"{self.user.username} ({self.employee_id})"
+        return f"{self.employee.username} ({self.emp_id})"

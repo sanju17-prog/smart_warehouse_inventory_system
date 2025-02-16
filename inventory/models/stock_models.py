@@ -1,6 +1,7 @@
 from django.db import models
 from . import product_models
 from . import warehouse_models
+from . import fleet_models
 from users.models import CustomUser
 
 class Stock(models.Model):
@@ -22,6 +23,7 @@ class StockMovement(models.Model):
         IN = "in", "In"
         OUT = "out", "Out"
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    batch_no = models.CharField(max_length=100, default='no_assign_0000')
     quantity = models.IntegerField()
     '''
     here it shows, how many products are moved in or out.
@@ -32,6 +34,7 @@ class StockMovement(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    vehicle = models.ForeignKey(fleet_models.Fleet, on_delete=models.CASCADE, null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):

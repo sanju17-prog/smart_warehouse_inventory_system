@@ -12,11 +12,11 @@ class WarehouseTypeAdmin(ModelAdmin):
     list_display = ['name', 'created_at']
 
 class WarehouseEmployeeAdmin(ModelAdmin):
-    list_display = ['employee_id', 'user', 'warehouse', 'assigned_at']
+    list_display = ['emp_id', 'employee', 'warehouse', 'assigned_at']
 
-    def formatted_user(self, obj):
-        return obj.user.username
-    formatted_user.short_description = 'User'
+    def formatted_employee(self, obj):
+        return obj.employee.name
+    formatted_employee.short_description = 'Employee'
 
     def formatted_warehouse(self, obj):
         return obj.warehouse.name
