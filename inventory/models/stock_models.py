@@ -1,5 +1,4 @@
 from django.db import models
-
 from . import product_models
 from . import warehouse_models
 from users.models import CustomUser
@@ -8,6 +7,12 @@ class Stock(models.Model):
     product = models.ForeignKey(product_models.Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     updated_at = models.DateTimeField(auto_now=True)
+    slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = f"{self.product.sku_code}-{self.product.name}"
+        super(Stock, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.product.name} ({self.quantity})"
@@ -27,6 +32,12 @@ class StockMovement(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = f"{self.stock.product.sku_code}-{self.stock.product.name}-{self.movement_type}"
+        super(StockMovement, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.stock.product.name} ({self.quantity})"
