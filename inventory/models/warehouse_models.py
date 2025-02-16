@@ -46,7 +46,6 @@ class Warehouse(models.Model):
         return self.name
     
 class WarehouseEmployee(models.Model):
-    emp_id = models.CharField(max_length=10, unique=True)
     employee = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     assigned_at = models.DateTimeField(auto_now_add=True)
@@ -54,11 +53,11 @@ class WarehouseEmployee(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = f"{self.user.username}-{self.warehouse.name}"
+            self.slug = f"{self.employee.username}-{self.warehouse.name}"
         super(WarehouseEmployee, self).save(*args, **kwargs)
 
     class Meta:
-        unique_together = ('emp_id', 'warehouse')
+        unique_together = ('employee', 'warehouse')
     
     def __str__(self):
-        return f"{self.employee.username} ({self.emp_id})"
+        return f"{self.employee.username} ({self.employee.employee_id})"

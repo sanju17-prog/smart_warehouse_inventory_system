@@ -1,9 +1,10 @@
-from ..models.stock_models import Stock, StockMovement
+from inventory.models.stock_models import Stock, StockMovement
 from faker import Faker
-from ..models.product_models import Product
-from ..models.warehouse_models import Warehouse
-from ...users.models import CustomUser
-from ..models.fleet_models import Fleet
+import random
+from inventory.models.product_models import Product
+from inventory.models.warehouse_models import Warehouse
+from users.models import CustomUser
+from inventory.models.fleet_models import Fleet
 faker = Faker()
 
 def seed_stocks(n = 1000):
@@ -11,7 +12,7 @@ def seed_stocks(n = 1000):
         products = Product.objects.all()
         stock = Stock.objects.create(
             product = faker.random_element(elements = products),
-            quantity = Faker.random_int(min=1, max=100000)
+            quantity = random.randint(1,100000)
         )
         stock.save()
         print(f'Stock {stock.product.name} created')
@@ -24,7 +25,7 @@ def seed_stock_movements(n = 1000):
         fleet = Fleet.objects.all()
         stock_movement = StockMovement.objects.create(
             stock = faker.random_element(elements = stocks),
-            quantity = Faker.random_int(min=1, max=100000),
+            quantity = random.randint(1, 100000),
             warehouse = faker.random_element(elements = warehouses),
             movement_type = faker.random_element(elements = ['in', 'out']),
             user = faker.random_element(elements = users),

@@ -1,5 +1,5 @@
-from ..models.product_models import Category, Product, ProductImage
-from ..models.warehouse_models import Warehouse
+from inventory.models.product_models import Category, Product, ProductImage
+from inventory.models.warehouse_models import Warehouse
 from faker import Faker
 import random
 faker = Faker()
@@ -43,13 +43,21 @@ CATEGORY_CHOICES = {
     },
 }
 
-faker.add_pro
+# faker.add_pro
 
-def seed_categories(n = 10):
-    for _ in range(n):
+def seed_categories():
+    for category_choice in CATEGORY_CHOICES.keys():
         Category.objects.create(
-            name = random.choice(list(CATEGORY_CHOICES.keys()))
+            name = category_choice
         )
+
+def get_unique_sku_code(category, warehouse):
+    while True:
+        sku_code = f"SKU-{category.name[:3].upper()}-{warehouse.name[:3].upper()}-{random.randint(2000, 2025)}-{faker.random_int(min=100,max=10000)}"
+        if not Product.objects.filter(sku_code=sku_code).exists():
+            return sku_code
+        else:
+            print(f"Duplicate SKU code generated: {sku_code}")
 
 def seed_products(n = 1000):
     categories = list(Category.objects.all())
@@ -64,9 +72,10 @@ def seed_products(n = 1000):
 
         # format description with product type
         description = description_template.format(product_name.lower())
-
+        sku_code = get_unique_sku_code(category, warehouse)
 
         product = Product.objects.create(
+            sku_code = sku_code,
             name = product_name,
             description = description,
             price = round(random.uniform(50.0, 5000.0), 2),
@@ -74,7 +83,6 @@ def seed_products(n = 1000):
             warehouse = warehouse
         )
 
-        product.sku_code = f"SKU-{category.name[:3].upper()}-{warehouse.name[:3].upper()}-{product.id}"
         product.save()
 
         ProductImage.objects.create(

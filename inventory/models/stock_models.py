@@ -12,8 +12,17 @@ class Stock(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = f"{self.product.sku_code}-{self.product.name}"
+            self.slug = self.generate_unique_slug()
         super(Stock, self).save(*args, **kwargs)
+
+    def generate_unique_slug(self):
+        self.slug =  f"{self.product.sku_code}-{self.product.name}"
+        ''' if already slug exists '''
+        num = 1
+        while Stock.objects.filter(slug = self.slug).exists():
+            self.slug += str(num)
+            num += 1
+        return self.slug
 
     def __str__(self):
         return f"{self.product.name} ({self.quantity})"
@@ -39,8 +48,17 @@ class StockMovement(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = f"{self.stock.product.sku_code}-{self.stock.product.name}-{self.movement_type}"
+            self.slug = self.generate_unique_slug()
         super(StockMovement, self).save(*args, **kwargs)
+
+    def generate_unique_slug(self):
+        self.slug =  f"{self.stock.product.sku_code}-{self.stock.product.name}-{self.movement_type}"
+        ''' if already slug exists '''
+        num = 1
+        while StockMovement.objects.filter(slug = self.slug).exists():
+            self.slug += str(num)
+            num += 1
+        return self.slug
 
     def __str__(self):
         return f"{self.stock.product.name} ({self.quantity})"

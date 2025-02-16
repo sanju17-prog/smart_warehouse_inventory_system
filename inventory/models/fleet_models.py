@@ -18,8 +18,17 @@ class Fleet(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = f"{self.plate_number}-{self.model}"
+            self.slug = self.unique_slug_field()
         super(Fleet, self).save(*args, **kwargs)
+
+    def unique_slug_field(self):
+        self.slug = f"{self.plate_number}-{self.fleet_type}"
+        '''check if already exists'''
+        num = 1
+        while Fleet.objects.filter(slug = self.slug).exists():
+            self.slug += str(num)
+            num += 1
+        return self.slug
     
     def __str__(self):
         return self.plate_number
@@ -37,8 +46,17 @@ class FleetMovement(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = f"{self.fleet.plate_number}-{self.source.name}-{self.destination.name}"
+            self.slug = self.unique_slug_field()
         super(FleetMovement, self).save(*args, **kwargs)
+
+    def unique_slug_field(self):
+        self.slug = f"{self.fleet.plate_number}-{self.source.name}-{self.destination.name}"
+        '''check if already exists'''
+        num = 1
+        while FleetMovement.objects.filter(slug = self.slug).exists():
+            self.slug += str(num)
+            num += 1
+        return self.slug
     
     def __str__(self):
         return f"{self.fleet.plate_number} ({self.source.name} to {self.destination.name})"

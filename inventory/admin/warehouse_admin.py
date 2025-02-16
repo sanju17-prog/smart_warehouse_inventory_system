@@ -12,7 +12,7 @@ class WarehouseTypeAdmin(ModelAdmin):
     list_display = ['name', 'created_at']
 
 class WarehouseEmployeeAdmin(ModelAdmin):
-    list_display = ['emp_id', 'employee', 'warehouse', 'assigned_at']
+    list_display = ['employee', 'warehouse', 'assigned_at']
 
     def formatted_employee(self, obj):
         return obj.employee.name

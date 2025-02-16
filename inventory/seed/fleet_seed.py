@@ -1,11 +1,19 @@
 from faker import Faker
 faker = Faker("en-IN") # ensures Indian location
-from ..models import Fleet, Warehouse, FleetMovement
+from inventory.models import Fleet, Warehouse, FleetMovement
+
+def get_unique_plate_number():
+    plate_number = faker.license_plate()
+    num = 1
+    while Fleet.objects.filter(plate_number=plate_number).exists():
+        plate_number += str(num)
+        num += 1
+    return plate_number
 
 def seed_fleet(n = 100):
     for _ in range(n):
         fleet = Fleet.objects.create(
-            plate_number = faker.license_plate(),
+            plate_number = get_unique_plate_number(),
             fleet_type = faker.random_element(elements = ['Ship', 'Train', 'Truck', 'Aircraft']),
             capacity = faker.random_int(min = 100, max = 1000),    
         )
