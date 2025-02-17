@@ -104,7 +104,10 @@ smart_warehouse_management/
 │   │
 │   └── viewsets/                     # Viewsets for inventory management
 │       ├── __init__.py
-│       └── fleet_viewset.py           # Viewset for fleet management
+│       ├── product_viewset.py          # Viewset for product management
+│       ├── stock_viewset.py            # Viewset for stock management
+│       ├── warehouse_viewset.py        # Viewset for warehouse management
+│       └── fleet_viewset.py            # Viewset for fleet management
 │
 ├── requirements.txt                    # Project dependencies
 ```
