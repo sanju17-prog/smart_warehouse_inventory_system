@@ -3,6 +3,7 @@ faker = Faker("en_IN")
 from django.utils.timezone import make_aware
 from datetime import datetime
 import random
+from django.contrib.auth import authenticate
 from .models import CustomUser
 from inventory.models.warehouse_models import Warehouse
 
@@ -78,3 +79,29 @@ def remove_excess_admin():
         if user >= total_warehouses:
             excess_user.role = CustomUser.Role.STAFF
             excess_user.save()
+
+def set_password_users():
+    users = CustomUser.objects.all().exclude(username='admin')
+
+    for user in users:
+        print("Setting for " + user.first_name)
+        new_password = user.last_name + "@" + user.first_name
+        print(f"New password for {user.username}: {new_password}")
+        print("Is user active: ",user.is_active)
+        user.set_password(new_password)
+        user.save()
+
+    print("All users password set successfully!!")
+
+def check_valid_password():
+    users = CustomUser.objects.all().exclude(username='admin')
+    for user in users:
+        username = user.username
+        password = user.last_name + "@" + user.first_name
+        print(f"Trying to authenticate {username} with password: {password}")
+        print("Is user active: ",user.is_active)
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            print("Successful!!")
+        else:
+            print("not done!!")

@@ -8,8 +8,6 @@ This project is a comprehensive warehouse management system designed to handle p
 - [Project Structure](#project-structure)
 - [Technologies Used](#technologies-used)
 - [Setup Instructions](#setup-instructions)
-    - [Windows](#windows)
-    - [macOS](#macos)
 - [Usage](#usage)
 - [Dependencies](#dependencies)
 
