@@ -10,8 +10,16 @@ class WarehouseType(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = self.get_unique_slug()
         super(WarehouseType, self).save(*args, **kwargs)
+
+    def get_unique_slug(self):
+        self.slug = slugify(self.name)
+        num = 1
+        while WarehouseType.objects.filter(slug = self.slug).exists():
+            self.slug += str(num)
+            num += 1
+        return self.slug
     
     def __str__(self):
         return self.name
@@ -39,8 +47,16 @@ class Warehouse(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = self.get_unique_slug()
         super(Warehouse, self).save(*args, **kwargs)
+
+    def get_unique_slug(self):
+        self.slug = slugify(self.name)
+        num = 1
+        while Warehouse.objects.filter(slug = self.slug).exists():
+            self.slug += str(num)
+            num += 1
+        return self.slug
     
     def __str__(self):
         return self.name
@@ -53,8 +69,16 @@ class WarehouseEmployee(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = f"{self.employee.username}-{self.warehouse.name}"
+            self.slug = self.get_unique_slug()
         super(WarehouseEmployee, self).save(*args, **kwargs)
+
+    def get_unique_slug(self):
+        self.slug = f"{self.employee.username}-{self.warehouse.name}"
+        num = 1
+        while WarehouseEmployee.objects.filter(slug = self.slug).exists():
+            self.slug += str(num)
+            num += 1
+        return self.slug
 
     class Meta:
         unique_together = ('employee', 'warehouse')

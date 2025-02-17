@@ -2,7 +2,10 @@ from django.contrib.admin import ModelAdmin
 from ..models.fleet_models import Fleet, FleetMovement
 
 class FleetAdmin(ModelAdmin):
-    list_display = ['plate_number', 'fleet_type', 'capacity','slug', 'status']
+    list_display = ['fleet_code', 'fleet_type', 'capacity', 'status']
+    ordering = ['fleet_type','capacity','status']
+    search_fields = ['fleet_type','capacity','status']
+    list_per_page = 20
 
     def formatted_fleet_type(self, obj):
         return obj.fleet_type.name
@@ -12,13 +15,9 @@ class FleetAdmin(ModelAdmin):
         return obj.status
     formatted_status.short_description = 'Status'
 
-    def formatted_slug(self, obj):
-        return obj.slug
-    formatted_slug.short_description = 'Slug'
-
-
 class FleetMovementAdmin(ModelAdmin):
-    list_display = ['fleet', 'source', 'destination', 'current_location_checkpoint', 'latitude', 'longitude', 'slug', 'arrival_time', 'departure_time']
+    list_display = ['fleet', 'source', 'destination', 'current_location_checkpoint', 'latitude', 'longitude', 'arrival_time', 'departure_time']
+    list_per_page = 20
 
     def formatted_source(self, obj):
         return obj.source.name
@@ -39,10 +38,6 @@ class FleetMovementAdmin(ModelAdmin):
     def formatted_longitude(self, obj):
         return obj.longitude
     formatted_longitude.short_description = 'Longitude'
-
-    def formatted_slug(self, obj):
-        return obj.slug
-    formatted_slug.short_description = 'Slug'
 
     def formatted_arrival_time(self, obj):
         return obj.arrival_time

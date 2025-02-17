@@ -4,6 +4,7 @@ from django.utils.timezone import make_aware
 from datetime import datetime
 import random
 from .models import CustomUser
+from inventory.models.warehouse_models import Warehouse
 
 EMAIL_EXTENSIONS = [
     "yahoo.com",
@@ -68,3 +69,12 @@ def seed_custom_user(n = 1000, batch_size = 5000):
             users = []
 
     CustomUser.objects.bulk_create(users)
+
+def remove_excess_admin():
+    total_warehouses = Warehouse.objects.all().count()
+    total_admins = CustomUser.objects.filter(role = CustomUser.Role.ADMIN)
+
+    for user, excess_user in enumerate(total_admins):
+        if user >= total_warehouses:
+            excess_user.role = CustomUser.Role.STAFF
+            excess_user.save()

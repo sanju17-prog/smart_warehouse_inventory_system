@@ -3,6 +3,7 @@ from django.contrib.admin import ModelAdmin
 
 class StockAdmin(ModelAdmin):
     list_display = ['product', 'quantity', 'updated_at']
+    list_per_page = 20
 
     def formatted_product(self, obj):
         return obj.product.name
@@ -10,6 +11,7 @@ class StockAdmin(ModelAdmin):
 
 class StockMovementAdmin(ModelAdmin):
     list_display = ['stock', 'quantity', 'warehouse', 'movement_type', 'user', 'created_at', 'updated_at']
+    list_per_page = 20
 
     def formatted_stock(self, obj):
         return obj.stock.product.name

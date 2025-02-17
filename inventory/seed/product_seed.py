@@ -1,4 +1,4 @@
-from inventory.models.product_models import Category, Product, ProductImage
+from inventory.models.product_models import Category, Product
 from inventory.models.warehouse_models import Warehouse
 from faker import Faker
 import random
@@ -84,8 +84,3 @@ def seed_products(n = 1000):
         )
 
         product.save()
-
-        ProductImage.objects.create(
-            image = 'products/product.jpg',
-            product = product
-        )

@@ -48,8 +48,5 @@ def seed_warehouse_employees(n = 10000):
         WarehouseEmployee.objects.create(
             employee = employee,
             warehouse = warehouse,
-            assigned_at = make_aware(datetime.combine(
-                faker.date_between(start_date="-24y", end_date="today"),
-                datetime.min.time()
-            ))
+            assigned_at = faker.date_time_between(start_date="-24y", end_date=datetime.today())
         )

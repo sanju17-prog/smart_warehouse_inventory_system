@@ -53,26 +53,4 @@ class Product(models.Model):
     
     def __str__(self):
         return self.name
-    
-class ProductImage(models.Model):
-    image = models.ImageField(upload_to='products/')
-    created_at = models.DateTimeField(auto_now_add=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    slug = models.SlugField(max_length=200,unique=True,null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = self.generate_unique_slug()
-        super(ProductImage, self).save(*args, **kwargs)
-
-    def generate_unique_slug(self):
-        original_slug = slugify(self.product.name)
-        unique_slug = original_slug
-        num = 1
-        while ProductImage.objects.filter(slug=unique_slug).exists():
-            unique_slug = f"{original_slug}-{num}"
-            num += 1
-        return unique_slug
-    
-    def __str__(self):
-        return self.product.name
+ 

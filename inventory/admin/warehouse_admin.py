@@ -3,6 +3,7 @@ from django.contrib.admin import ModelAdmin
 
 class WarehouseAdmin(ModelAdmin):
     list_display = ['name', 'address', 'latitude', 'longitude', 'capacity', 'created_at', 'updated_at', 'warehouse_type', 'is_active', 'total_stock_value']
+    list_per_page = 20
 
     def formatted_warehouse_type(self, obj):
         return obj.warehouse_type.name
@@ -10,9 +11,11 @@ class WarehouseAdmin(ModelAdmin):
 
 class WarehouseTypeAdmin(ModelAdmin):
     list_display = ['name', 'created_at']
+    list_per_page = 20
 
 class WarehouseEmployeeAdmin(ModelAdmin):
     list_display = ['employee', 'warehouse', 'assigned_at']
+    list_per_page = 20
 
     def formatted_employee(self, obj):
         return obj.employee.name
