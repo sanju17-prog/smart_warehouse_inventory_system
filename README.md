@@ -129,13 +129,13 @@ cd smart_warehouse_management
 ```
 
 2. **Set up a virtual environment:**
-### Windows
+#### Windows
 ```bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
-### macOS
+#### macOS
 ```bash
 python3 -m venv venv
 source venv/bin/activate
