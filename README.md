@@ -129,17 +129,16 @@ cd smart_warehouse_management
 ```
 
 2. **Set up a virtual environment:**
-#### Windows
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-#### macOS
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
+    1. ***Windows***
+    ``
+    python -m venv venv
+    venv\Scripts\activate
+    ``
+    2. ***macOs***
+    ``
+    python3 -m venv venv
+    source venv/bin/activate
+    ``
 3. **Install dependencies:**
 ```bash
 pip install -r requirements.txt
