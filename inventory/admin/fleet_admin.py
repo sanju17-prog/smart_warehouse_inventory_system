@@ -1,5 +1,4 @@
 from django.contrib.admin import ModelAdmin
-from ..models.fleet_models import Fleet, FleetMovement
 
 class FleetAdmin(ModelAdmin):
     list_display = ['fleet_code', 'fleet_type', 'capacity', 'status']
@@ -17,6 +16,8 @@ class FleetAdmin(ModelAdmin):
 
 class FleetMovementAdmin(ModelAdmin):
     list_display = ['fleet', 'source', 'destination', 'current_location_checkpoint', 'latitude', 'longitude', 'arrival_time', 'departure_time']
+    ordering = ['fleet','source','destination','current_location_checkpoint','arrival_time','departure_time']
+    search_fields = ['fleet__fleet_code','source__name','destination__name','current_location_checkpoint']
     list_per_page = 20
 
     def formatted_source(self, obj):

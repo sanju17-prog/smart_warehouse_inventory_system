@@ -19,3 +19,8 @@ class IsAdminOrStaffOrManager(BasePermission):
     '''Allow access to admin, staff, or manager users'''
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role in ["admin", "staff", "manager"]
+
+class IsAdminOrManager(BasePermission):
+    '''Allow access to admin and manager users'''
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role in ["admin", "manager"]

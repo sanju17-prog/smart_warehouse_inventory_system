@@ -1,8 +1,9 @@
-from ..models.warehouse_models import Warehouse, WarehouseEmployee, WarehouseType
 from django.contrib.admin import ModelAdmin
 
 class WarehouseAdmin(ModelAdmin):
     list_display = ['name', 'address', 'latitude', 'longitude', 'capacity', 'created_at', 'updated_at', 'warehouse_type', 'is_active', 'total_stock_value']
+    ordering = ['name', 'address', 'capacity', 'created_at', 'updated_at', 'warehouse_type', 'is_active', 'total_stock_value']
+    search_fields = ['name', 'address', 'capacity', 'warehouse_type__name', 'total_stock_value']
     list_per_page = 20
 
     def formatted_warehouse_type(self, obj):
@@ -11,10 +12,14 @@ class WarehouseAdmin(ModelAdmin):
 
 class WarehouseTypeAdmin(ModelAdmin):
     list_display = ['name', 'created_at']
+    ordering =  ['name', 'created_at']
+    search_fields = ['name']
     list_per_page = 20
 
 class WarehouseEmployeeAdmin(ModelAdmin):
     list_display = ['employee', 'warehouse', 'assigned_at']
+    ordering = ['employee', 'warehouse', 'assigned_at']
+    search_fields = ['employee__name', 'warehouse__name']
     list_per_page = 20
 
     def formatted_employee(self, obj):

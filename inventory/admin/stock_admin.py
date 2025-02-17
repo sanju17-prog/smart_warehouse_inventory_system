@@ -1,16 +1,24 @@
-from ..models.stock_models import Stock, StockMovement
 from django.contrib.admin import ModelAdmin
 
-class StockAdmin(ModelAdmin):
-    list_display = ['product', 'quantity', 'updated_at']
+
+class StockProductAdmin(ModelAdmin):
+    list_display = ['product','stock','quantity']
+    ordering = ['product','stock','quantity']
+    search_fields = ['product__name','stock__slug','quantity']
     list_per_page = 20
 
     def formatted_product(self, obj):
         return obj.product.name
     formatted_product.short_description = 'Product'
 
+    def formatted_stock(self, obj):
+        return obj.stock.slug
+    formatted_stock.short_description = 'Stock'
+
 class StockMovementAdmin(ModelAdmin):
     list_display = ['stock', 'quantity', 'warehouse', 'movement_type', 'user', 'created_at', 'updated_at']
+    ordering = ['stock','quantity','warehouse','movement_type','user', 'created_at', 'updated_at']
+    search_fields = ['stock__slug','quantity','warehouse__name','movement_type','user']
     list_per_page = 20
 
     def formatted_stock(self, obj):

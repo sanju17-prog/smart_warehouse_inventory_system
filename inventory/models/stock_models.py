@@ -4,11 +4,11 @@ from . import warehouse_models
 from . import fleet_models
 from users.models import CustomUser
 
+
 class Stock(models.Model):
-    product = models.ForeignKey(product_models.Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
     updated_at = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
+    warehouse = models.ForeignKey(warehouse_models.Warehouse, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -16,10 +16,33 @@ class Stock(models.Model):
         super(Stock, self).save(*args, **kwargs)
 
     def generate_unique_slug(self):
-        self.slug =  f"{self.product.sku_code}-{self.product.name}"
+        self.slug =  f"{self.warehouse.name}"
         ''' if already slug exists '''
         num = 1
         while Stock.objects.filter(slug = self.slug).exists():
+            self.slug += str(num)
+            num += 1
+        return self.slug
+
+    def __str__(self):
+        return f"{self.warehouse.name})"
+    
+class StockProductQty(models.Model):
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    product = models.ForeignKey(product_models.Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self.generate_unique_slug()
+        super(StockProductQty, self).save(*args, **kwargs)
+
+    def generate_unique_slug(self):
+        self.slug =  f"{self.product.sku_code}-{self.product.name}"
+        ''' if already slug exists '''
+        num = 1
+        while StockProductQty.objects.filter(slug = self.slug).exists():
             self.slug += str(num)
             num += 1
         return self.slug
@@ -31,7 +54,7 @@ class StockMovement(models.Model):
     class MovementType(models.TextChoices):
         IN = "in", "In"
         OUT = "out", "Out"
-    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    stock = models.ForeignKey(StockProductQty, on_delete=models.CASCADE)
     batch_no = models.CharField(max_length=100, default='no_assign_0000')
     quantity = models.IntegerField()
     '''

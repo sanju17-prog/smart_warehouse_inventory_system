@@ -150,3 +150,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),  # Access token lifetime (2 hours)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Refresh token lifetime (1 day)
+    'ROTATE_REFRESH_TOKENS': True,                  # Whether to rotate refresh tokens (set to True if needed)
+    'BLACKLIST_AFTER_ROTATION': True,               # Whether to blacklist old refresh tokens after rotation
+    'UPDATE_LAST_LOGIN': True,                      # Whether to update the last login field upon refresh
+}

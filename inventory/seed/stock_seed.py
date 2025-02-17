@@ -9,9 +9,7 @@ faker = Faker()
 
 def seed_stocks(n = 1000):
     for _ in range(n):
-        products = Product.objects.all()
         stock = Stock.objects.create(
-            product = faker.random_element(elements = products),
             quantity = random.randint(1,100000)
         )
         stock.save()

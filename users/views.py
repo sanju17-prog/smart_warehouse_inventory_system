@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
 from .models import CustomUser
-from .permissions import IsAdmin, IsManager, IsStaff, IsAdminOrStaffOrManager
+from .permissions import IsAdminOrStaffOrManager
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import EmployeeSerializer
 from rest_framework.pagination import PageNumberPagination

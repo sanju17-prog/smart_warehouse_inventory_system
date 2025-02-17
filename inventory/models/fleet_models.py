@@ -34,7 +34,7 @@ class Fleet(models.Model):
         return self.fleet_code
     
 class FleetMovement(models.Model):
-    fleet = models.OneToOneField(Fleet, on_delete=models.CASCADE)
+    fleet = models.ForeignKey(Fleet, on_delete=models.CASCADE)
     source = models.ForeignKey(warehouse_models.Warehouse, on_delete=models.CASCADE, related_name='source')
     destination = models.ForeignKey(warehouse_models.Warehouse, on_delete=models.CASCADE, related_name='destination')
     arrival_time = models.DateTimeField(auto_now=True)

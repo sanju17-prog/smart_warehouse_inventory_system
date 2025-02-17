@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.utils.text import slugify
 
 # Create your models here.
 class CustomUser(AbstractUser):
@@ -10,6 +11,7 @@ class CustomUser(AbstractUser):
     employee_id = models.CharField(max_length=10, unique=True)
     mobile_number = models.CharField(max_length=15, unique=True)
     role = models.CharField(max_length=10, choices=Role.choices, default=Role.STAFF)
+    slug = models.SlugField(unique=False, blank=True,null=True)
 
     groups = models.ManyToManyField(Group, related_name="customuser_groups", blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name="customuser_permissions", blank=True)
@@ -19,6 +21,11 @@ class CustomUser(AbstractUser):
     AbstractUser inherits from PermissionsMixin, which includes the groups and user_permissions fields.
     Since you're using a custom user model, Django expects you to handle these fields properly.
     '''
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.employee_id)
+        super(CustomUser, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.username} ({self.employee_id})"
