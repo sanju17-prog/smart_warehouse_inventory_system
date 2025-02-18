@@ -4,9 +4,9 @@ from inventory.viewsets.fleet_viewset import FleetViewSet, FleetMovementViewSet
 
 route = DefaultRouter()
 
-route.register("fleet", FleetViewSet, basename="fleet")
-route.register("fleet_movement", FleetMovementViewSet, basename="fleet_movement")
+route.register(r"fleet", FleetViewSet, basename="fleet")
+route.register(r"fleet-movement", FleetMovementViewSet, basename="fleet_movement")
 
 urlpatterns = [
-    path("", include(route.urls))
+    path("fleet/", include(route.urls))
 ]

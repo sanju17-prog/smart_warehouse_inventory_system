@@ -1,8 +1,6 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-
-router = DefaultRouter()
+from inventory.urls import urlpatterns as inventory_urls
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path("",include(inventory_urls,'subsets', namespace = 'subsets')),
 ]

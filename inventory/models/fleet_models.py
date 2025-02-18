@@ -50,7 +50,7 @@ class FleetMovement(models.Model):
         super(FleetMovement, self).save(*args, **kwargs)
 
     def unique_slug_field(self):
-        self.slug = f"{self.fleet.fleet_code}-{self.source.name}-{self.destination.name}"
+        self.slug = f"{self.fleet.fleet_code[0]}-{self.source.name[0]}-{self.destination.name[0]}"
         '''check if already exists'''
         num = 1
         while FleetMovement.objects.filter(slug = self.slug).exists():

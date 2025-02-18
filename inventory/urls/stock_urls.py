@@ -4,5 +4,5 @@ from rest_framework.routers import DefaultRouter
 route = DefaultRouter()
 
 urlpatterns = [
-    path("", include(route.urls))
+    path("stock/", include(route.urls))
 ]
