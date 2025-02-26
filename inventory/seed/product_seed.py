@@ -84,3 +84,23 @@ def seed_products(n = 1000):
         )
 
         product.save()
+
+def populate_minimum_threshold():
+    """
+    Updates the minimum_threshold for all products based on category logic.
+    """
+    CATEGORY_THRESHOLDS = {
+        "Industrial Goods & Equipment": (50, 100),  # Bulk storage, steady demand
+        "Perishables & Cold Chain Logistics": (5, 20),  # Short shelf life, fast turnover
+        "Fuel & Energy Logistics": (20, 50),  # Medium demand, steady supply
+        "Bulk & Containerized Cargo": (30, 80),  # Variable demand, depends on logistics
+    }
+
+    products = Product.objects.all()
+
+    for product in products:
+        min_thresh_range = CATEGORY_THRESHOLDS.get(product.category.name,(10,50))
+        minimum_threshold = random.randint(*min_thresh_range)
+        product.minimum_threshold = minimum_threshold
+        product.save()
+    print("Minimum threshold for all the products populated!!")

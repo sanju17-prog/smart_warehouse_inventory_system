@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
     employee_id = models.CharField(max_length=10, unique=True)
     mobile_number = models.CharField(max_length=15, unique=True)
     role = models.CharField(max_length=10, choices=Role.choices, default=Role.STAFF)
-    slug = models.SlugField(unique=False, blank=True,null=True)
+    slug = models.SlugField(unique=True, blank=True,null=True)
 
     groups = models.ManyToManyField(Group, related_name="customuser_groups", blank=True)
     user_permissions = models.ManyToManyField(Permission, related_name="customuser_permissions", blank=True)
@@ -24,7 +24,7 @@ class CustomUser(AbstractUser):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.employee_id)
+            self.slug = slugify(self.username)
         super(CustomUser, self).save(*args, **kwargs)
 
     def __str__(self):

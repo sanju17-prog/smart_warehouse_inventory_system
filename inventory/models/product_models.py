@@ -34,6 +34,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
+    minimum_threshold = models.IntegerField(default=0)
     slug = models.SlugField(max_length=200,unique=True,null=True, blank=True)
 
     def save(self, *args, **kwargs):

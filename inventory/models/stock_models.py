@@ -66,7 +66,7 @@ class StockMovement(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    vehicle = models.ForeignKey(fleet_models.Fleet, on_delete=models.CASCADE, null=True, blank=True)
+    fleet = models.ForeignKey(fleet_models.Fleet, on_delete=models.CASCADE, null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
