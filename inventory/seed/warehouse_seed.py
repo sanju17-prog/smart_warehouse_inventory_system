@@ -1,5 +1,5 @@
 from faker import Faker
-faker = Faker("en_IN") # ensures Indian location
+faker = Faker()
 import random
 from inventory.models.warehouse_models import Warehouse, WarehouseEmployee, WarehouseType
 from  users.models import CustomUser
@@ -19,23 +19,66 @@ def seed_warehouse_types():
             name = WAREHOUSE_CHOICES[index]
         )
 
+def generate_address():
+    # Dictionary of 20 Indian PIN codes mapped to city and state
+    indian_locations = {
+        "110001": ("New Delhi", "Delhi"),
+        "400001": ("Mumbai", "Maharashtra"),
+        "560001": ("Bangalore", "Karnataka"),
+        "600001": ("Chennai", "Tamil Nadu"),
+        "500001": ("Hyderabad", "Telangana"),
+        "700001": ("Kolkata", "West Bengal"),
+        "411001": ("Pune", "Maharashtra"),
+        "380001": ("Ahmedabad", "Gujarat"),
+        "302001": ("Jaipur", "Rajasthan"),
+        "682001": ("Kochi", "Kerala"),
+        "452001": ("Indore", "Madhya Pradesh"),
+        "641001": ("Coimbatore", "Tamil Nadu"),
+        "144001": ("Jalandhar", "Punjab"),
+        "208001": ("Kanpur", "Uttar Pradesh"),
+        "226001": ("Lucknow", "Uttar Pradesh"),
+        "831001": ("Jamshedpur", "Jharkhand"),
+        "492001": ("Raipur", "Chhattisgarh"),
+        "180001": ("Jammu", "Jammu & Kashmir"),
+        "248001": ("Dehradun", "Uttarakhand"),
+        "795001": ("Imphal", "Manipur"),
+    }
+
+    attempts = 0
+    while attempts < 20:
+        pin_code, city_state = random.choice(list(indian_locations.items()))
+        city, state = city_state
+        address = f"{faker.building_number()}, {faker.street_name()}, {city}, {state}, {pin_code}"
+
+        if not Warehouse.objects.filter(address=address).exists():
+            return address
+        
+        attempts += 1
+    
+    raise ValueError("Max attempts reached! Unable to generate a unique address.")
+
+def generate_unique_name():
+    attempts  = 0
+    while attempts < 20:
+        name = faker.name()
+        
+        if not Warehouse.objects.filter(name=name).exists():
+           return name
+        attempts += 1
+
+    raise ValueError("Max attempts reached! Unable to generate a unique name.")
+
 def seed_warehouse(n = 10):
     for _ in range(n):
-        location = faker.location_on_land()
-        city = location[2]
-        state = location[4]
-        pincode = faker.postcode()
-        street = faker.street_address()
-        address = f"{street}, {city}, {state}, {pincode}"
         warehouse_types = WarehouseType.objects.all()
         warehouse_type = random.choice(warehouse_types)
+        
         warehouse = Warehouse.objects.create(
-            warehouse_type = faker.random_element(elements=warehouse_types),
-            name = f"{warehouse_type.name} - {city}",
-            address = address,
-            latitude = location[0],
-            longitude = location[1],
-            capacity = faker.random_int(min=2000, max=1000000)
+            warehouse_type = warehouse_type,
+            name = generate_unique_name(),
+            address = generate_address(),
+            capacity = faker.random_int(min=2000, max=1000000),
+            threshold = faker.random_int(min=2000, max=10000)
         )
         warehouse.save()
 

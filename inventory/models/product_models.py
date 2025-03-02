@@ -1,8 +1,16 @@
+'''
+All the product related models
+'''
 from django.db import models
-from .warehouse_models import Warehouse
 from django.utils.text import slugify
+from .warehouse_models import Warehouse
+
 
 class Category(models.Model):
+    '''
+    Details about product category
+    '''
+    objects = models.Manager()
     name = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(max_length=200,unique=True,null=True, blank=True)
@@ -13,6 +21,9 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
 
     def generate_unique_slug(self):
+        '''
+        for generating unique slugs
+        '''
         original_slug = slugify(self.name)
         unique_slug = original_slug
         num = 1
@@ -23,9 +34,13 @@ class Category(models.Model):
         return unique_slug
     
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 class Product(models.Model):
+    '''
+    Contains all the product details
+    '''
+    objects = models.Manager()
     sku_code = models.CharField(max_length=255, unique=True, primary_key=True) # stock keeping unit
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -33,8 +48,7 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
-    minimum_threshold = models.IntegerField(default=0)
+    supplier_company = models.CharField(max_length=255, blank=True)
     slug = models.SlugField(max_length=200,unique=True,null=True, blank=True)
 
     def save(self, *args, **kwargs):
@@ -53,5 +67,5 @@ class Product(models.Model):
         return unique_slug
     
     def __str__(self):
-        return self.name
+        return str(self.name)
  

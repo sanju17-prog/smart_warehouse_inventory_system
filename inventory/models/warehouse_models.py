@@ -1,7 +1,11 @@
 from django.db import models
 from users.models import CustomUser
 from django.utils.text import slugify
+import time
+from geopy.geocoders import Nominatim
 # Create your models here.
+
+geolocator = Nominatim(user_agent="geoapi")
 
 class WarehouseType(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -26,11 +30,13 @@ class WarehouseType(models.Model):
 
 class Warehouse(models.Model):
     warehouse_type = models.ForeignKey(WarehouseType, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, unique=True)
-    address = models.TextField()
+    name = models.CharField(max_length=255, unique=True, default="abc")
+    address = models.TextField(blank=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    capacity = models.PositiveIntegerField() # maximum number of products that can be stored
+    capacity = models.PositiveIntegerField(default=0) # maximum number of products that can be stored
+    current_stock = models.PositiveIntegerField(default=0) # current number of products available in warehouse
+    threshold = models.PositiveIntegerField(default=0) # current number of products available in warehouse
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -48,7 +54,26 @@ class Warehouse(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = self.get_unique_slug()
+        self.latitude, self.longitude = self.get_lat_lon(self.address)
         super(Warehouse, self).save(*args, **kwargs)
+
+    def get_lat_lon(self, address):
+        time.sleep(1) # Ensures 1 request per second, so not to exceed its rate limit
+        modified_address = f"{self.address}, India"
+        location = geolocator.geocode(modified_address)
+        if location:
+            return location.latitude, location.longitude
+
+        # If location is None, try again with just city and India
+        address_parts = self.address.split(",")
+        if len(address_parts) > 1:
+            city = address_parts[-2].strip()
+            location = geolocator.geocode(f"{city}, India")
+            if location:
+                return location.latitude, location.longitude
+        
+        # Final fallback: use a default location (e.g., New Delhi)
+        return 28.6139, 77.2090  # Coordinates for New Delhi, India
 
     def get_unique_slug(self):
         self.slug = slugify(self.name)

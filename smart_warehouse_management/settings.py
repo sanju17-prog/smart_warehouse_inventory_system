@@ -47,7 +47,6 @@ EXTERNAL_APPS = [
     'rest_framework_simplejwt',
     'inventory',
     'users',
-    'orders',
     'notifications',
     'reports',
     'import_export',

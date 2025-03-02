@@ -52,10 +52,12 @@ def seed_fleet_movement(n = 100):
         longitude = random.uniform(float(min(source_longitude, destination_longitude)), 
                                  float(max(source_longitude, destination_longitude)))
         current_location_checkpoint = geolocator.reverse((latitude, longitude), language='en')
+        fleet = get_unique_fleet()
         if current_location_checkpoint is None:
             current_location_checkpoint = ' '
         fleet_movement = FleetMovement.objects.create(
-            fleet = get_unique_fleet(),
+            fleet = fleet,
+            quantity = random.randint(1, fleet.capacity),
             source = source,
             destination = destination,
             arrival_time = arrival_time,
@@ -65,5 +67,8 @@ def seed_fleet_movement(n = 100):
             longitude = longitude,
         )
 
-        fleet_movement.save()
-        print(f'Fleet Movement {fleet_movement.fleet.fleet_code} created')
+        try:
+            fleet_movement.save()
+            print(f'Fleet Movement {fleet_movement.fleet.fleet_code} created')
+        except Exception as e:
+            print(str(e))

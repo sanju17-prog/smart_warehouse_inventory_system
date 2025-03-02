@@ -1,4 +1,4 @@
-from inventory.models.stock_models import Stock, StockMovement
+from inventory.models.stock_models import Stock, StockMovement, StockProductQty
 from faker import Faker
 import random
 from inventory.models.product_models import Product
@@ -8,26 +8,39 @@ from inventory.models.fleet_models import Fleet
 faker = Faker()
 
 def seed_stocks(n = 1000):
+    warehouses = Warehouse.objects.all()
     for _ in range(n):
         stock = Stock.objects.create(
-            quantity = random.randint(1,100000)
+            warehouse = faker.random_element(elements = warehouses)
         )
         stock.save()
-        print(f'Stock {stock.product.name} created')
+        print(f'Stock {stock} created')
+    
+def seed_stock_product_qty(n = 1000):
+    stocks = Stock.objects.all()
+    products = Product.objects.all()
+
+    for _ in range(n):
+        stock_product = StockProductQty.objects.create(
+            stock = random.choice(stocks),
+            product = random.choice(products),
+            batch_no = None, # Let model generate it
+            quantity = random.randint(1000, 10000)
+        )
+
+        stock_product.save()
+        print(f"{stock_product.batch_no} created!!")
 
 def seed_stock_movements(n = 1000):
+    stocks = Stock.objects.all()
+    users = CustomUser.objects.all()
+    fleets = Fleet.objects.all()
     for _ in range(n):
-        stocks = Stock.objects.all()
-        warehouses = Warehouse.objects.all()
-        users = CustomUser.objects.all()
-        fleet = Fleet.objects.all()
         stock_movement = StockMovement.objects.create(
             stock = faker.random_element(elements = stocks),
-            quantity = random.randint(1, 100000),
-            warehouse = faker.random_element(elements = warehouses),
-            movement_type = faker.random_element(elements = ['in', 'out']),
             user = faker.random_element(elements = users),
-            vehicle = faker.random_element(elements = fleet)
+            reason = faker.sentences(),
+            fleet = faker.random_element(fleets)
         )
         stock_movement.save()
         print(f'Stock Movement {stock_movement.stock.product.name} created')
