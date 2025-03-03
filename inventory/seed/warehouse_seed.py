@@ -82,12 +82,23 @@ def seed_warehouse(n = 10):
         )
         warehouse.save()
 
-def seed_warehouse_employees(n = 10000):
+def generate_unique_employees():
     users = CustomUser.objects.all()
     warehouses = Warehouse.objects.all()
-    for _ in range(n):
-        employee = random.choice(users)
+    warehouse = random.choice(warehouses)
+    employee = random.choice(users)
+    warehouse_employee = WarehouseEmployee.objects.filter(employee = employee, warehouse = warehouse)
+
+    while warehouse_employee.exists():
         warehouse = random.choice(warehouses)
+        employee = random.choice(users)
+        warehouse_employee = WarehouseEmployee.objects.filter(employee = employee, warehouse = warehouse)
+
+    return warehouse, employee
+
+def seed_warehouse_employees(n = 10000):
+    for _ in range(n):
+        warehouse, employee = generate_unique_employees()
         WarehouseEmployee.objects.create(
             employee = employee,
             warehouse = warehouse,

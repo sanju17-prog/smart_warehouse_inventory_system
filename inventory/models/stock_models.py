@@ -9,7 +9,7 @@ from . import fleet_models
 
 class Stock(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
-    slug = models.SlugField(max_length=200, unique=True, null=True, blank=True)
+    slug = models.SlugField(max_length=1000, unique=True, null=True, blank=True)
     warehouse = models.ForeignKey(warehouse_models.Warehouse, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):

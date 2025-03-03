@@ -12,6 +12,6 @@ class CustomUserResource(resources.ModelResource):
 class CustomUserAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = ['employee_id','email','username','first_name','last_name','mobile_number','role','slug']
     search_fields = ['email', 'username', 'first_name', 'last_name','role']
-    ordering = ['employee_id','username','first_name','mobile_number','role']
+    ordering_fields = ['employee_id','username','first_name','mobile_number','role']
     list_per_page = 20
 

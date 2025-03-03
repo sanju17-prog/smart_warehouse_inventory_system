@@ -1,11 +1,10 @@
 from django.contrib.admin import ModelAdmin
 
-
 class StockProductAdmin(ModelAdmin):
-    list_display = ['product','stock','quantity']
-    ordering = ['product','stock','quantity']
-    search_fields = ['product__name','stock__slug','quantity']
-    list_per_page = 20
+    list_display = ['product','stock__warehouse','stock__warehouse__warehouse_type', 'batch_no', 'manufacture_date', 'expiry_date', 'quantity']
+    ordering_fields = ['product','stock__warehouse','stock__warehouse__warehouse_type','batch_no', 'manufacture_date', 'expiry_date', 'quantity']
+    search_fields = ['product__name','stock__slug','stock__warehouse__name','stock__warehouse__warehouse_type__name', 'batch_no', 'manufacture_date', 'expiry_date', 'quantity']
+    list_per_page = 100
 
     def formatted_product(self, obj):
         return obj.product.name
